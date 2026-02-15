@@ -17,8 +17,8 @@
 
 from fastapi import FastAPI, status
 from fastapi.responses import ORJSONResponse, Response
-from pydantic import BaseModel, Field, field_validator
-from pydantic_core import PydanticCustomError
+from src.schemas import IncomingBook, PatchBook, ReturnedAllBooks, ReturnedBook
+
 
 COUNTER = 1  # Каунтер, иметирующий присвоение id в базе данных
 
@@ -37,47 +37,6 @@ app = FastAPI(
 # симулируем хранилище данных. Просто сохраняем объекты в память, в словаре.
 # {0: {"id": 1, "title": "blabla", ...., "year": 2023}}
 fake_storage = {}
-
-
-# Базовый класс "Книги", содержащий поля, которые есть во всех классах-наследниках.
-class BaseBook(BaseModel):
-    title: str
-    author: str
-    year: int
-
-
-# Класс для обработки входных данных для частичного обновления данных о книге
-class PatchBook(BaseModel):
-    title: str | None = None
-    author: str | None = None
-    year: int | None = None
-    pages: int | None = None
-
-
-# Класс для валидации входящих данных. Не содержит id так как его присваивает БД.
-class IncomingBook(BaseBook):
-    pages: int = Field(
-        default=100, alias="count_pages"
-    )  # Пример использования тонкой настройки полей. Передачи в них метаинформации.
-
-    @field_validator("year")  # Валидатор, проверяет что дата не слишком древняя
-    @staticmethod
-    def validate_year(val: int):
-        if val < 2020:
-            raise PydanticCustomError("Validation error", "Year is too old!")
-
-        return val
-
-
-# Класс, валидирующий исходящие данные. Он уже содержит id
-class ReturnedBook(BaseBook):  # {"id": 1, "title": "Clean Code", ....}
-    id: int
-    pages: int | None = None
-
-
-# Класс для возврата массива объектов "Книга"
-class ReturnedAllBooks(BaseModel):
-    books: list[ReturnedBook]
 
 
 # Просто пример ручки и того, как ее можно исключить из схемы сваггера
