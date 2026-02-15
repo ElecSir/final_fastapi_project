@@ -1,15 +1,10 @@
 from fastapi import APIRouter, Response, status
 
 from src.schemas import IncomingBook, PatchBook, ReturnedAllBooks, ReturnedBook
+from src.models.books import fake_storage, COUNTER
 
 books_router = APIRouter(prefix="/books", tags=["boooks", "v1"])
 
-
-COUNTER = 1  # Каунтер, иметирующий присвоение id в базе данных
-
-# симулируем хранилище данных. Просто сохраняем объекты в память, в словаре.
-# {0: {"id": 1, "title": "blabla", ...., "year": 2023}}
-fake_storage = {}
 
 # Ручка, возвращающая все книги
 @books_router.get("/", response_model=ReturnedAllBooks)
