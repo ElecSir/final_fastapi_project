@@ -9,6 +9,10 @@
 # 4xx - Client errors
 # 5xx - Server errors
 
+# Для активации виртуального окружения
+# Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+# .\.venv\Scripts\activate
+
 # CRUD - Create, Read, Update, Delete
 
 from fastapi import FastAPI, status
