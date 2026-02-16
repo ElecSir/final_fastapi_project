@@ -17,7 +17,19 @@
 
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from icecream import ic
+
 from src.routers.v1.books import books_router
+from src.configurates.database import create_db_and_tables, global_init
+
+
+async def lifespan(app: FastAPI):
+    global_init()
+    ic("Initializing app...")
+    await create_db_and_tables()
+    ic("App started!")
+    yield
+    # some code on stop app
 
 
 # Само приложение fastApi. именно оно запускается сервером и служит точкой входа
@@ -28,6 +40,7 @@ app = FastAPI(
     version="0.0.1",
     responses={404: {"description": "Object not found!"}},
     default_response_class=ORJSONResponse,  # Подключаем быстрый сериализатор
+    lifespan=lifespan
 )
 
 
