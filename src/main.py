@@ -20,7 +20,7 @@ from fastapi.responses import ORJSONResponse
 from icecream import ic
 
 from src.routers.v1.books import books_router
-from src.configurates.database import create_db_and_tables, global_init
+from src.configurations.database import create_db_and_tables, global_init
 
 
 async def lifespan(app: FastAPI):

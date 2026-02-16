@@ -1,37 +1,48 @@
-from fastapi import APIRouter, Response, status
+from typing import Annotated
 
+from fastapi import APIRouter, Depends, Response, status
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.configurations.database import get_async_session
 from src.schemas import IncomingBook, PatchBook, ReturnedAllBooks, ReturnedBook
-from src.models.books import fake_storage, COUNTER
+from src.models.books import fake_storage, Book
 
 books_router = APIRouter(prefix="/books", tags=["boooks", "v1"])
 
 
+DBSession = Annotated[AsyncSession, Depends(get_async_session)]
+
+
 # Ручка, возвращающая все книги
 @books_router.get("/", response_model=ReturnedAllBooks)
-async def get_all_books():
+async def get_all_books(session: DBSession):
     # Хотим видеть формат
     # books: [{"id": 1, "title": "blabla", ...., "year": 2023},{...}]
-    books = list(fake_storage.values())
+    
+    query = select(Book)  # SELECT * FROM boocs_table;
+    result = await session.execute(query)  # await session.execute(select(Book))
+
+    books = result.scalars().all()
     return {"books": books}
 
 
 # Ручка для создания записи о книге в БД. Возвращает созданную книгу.
 @books_router.post("/", response_model=ReturnedBook, status_code=status.HTTP_201_CREATED)
-async def create_book(book: IncomingBook):  # прописываем модель валидирующую входные данные
-    global COUNTER  # счетчик ИД нашей фейковой БД
+async def create_book(book: IncomingBook, session: DBSession):  # прописываем модель валидирующую входные данные
 
-    # TODO запись в БД
     # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
-    new_book = {
-        "id": COUNTER,
-        "title": book.title,
-        "author": book.author,
-        "year": book.year,
-        "pages": book.pages,
-    }
+    new_book = Book(
+        **{
+            "title": book.title,
+            "author": book.author,
+            "year": book.year,
+            "pages": book.pages,
+        }
+    )
 
-    fake_storage[COUNTER] = new_book
-    COUNTER += 1
+    session.add(new_book)
+    await session.flush()
 
     # return ORJSONResponse({"book": new_book}, status_code=status.HTTP_201_CREATED) # Альтернатива для возврата кода
     return new_book
