@@ -25,7 +25,7 @@ def global_init() -> None:
         return
 
     if not __async_engine:
-        __async_engine = create_async_engine(url=SQLALCHEMY_DATABASE_URL, echo=True)
+        __async_engine = create_async_engine(url=SQLALCHEMY_DATABASE_URL, echo=False)
 
     __session_factory = async_sessionmaker(__async_engine)
 
@@ -57,5 +57,5 @@ async def create_db_and_tables():
         raise ValueError({"message": "You must call global_init() before using this method."})
 
     async with __async_engine.begin() as conn:
-        await conn.run_sync(BaseModel.metadata.drop_all)
+        # await conn.run_sync(BaseModel.metadata.drop_all)
         await conn.run_sync(BaseModel.metadata.create_all)
