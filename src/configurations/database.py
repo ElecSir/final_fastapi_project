@@ -9,13 +9,14 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from src.models.base import BaseModel
+from .settings import settings
 
 logger = logging.getLogger("__name__")
 
 __async_engine: AsyncEngine | None = None
 __session_factory: Optional[Callable[[], AsyncSession]] = None
 
-SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres_user:postgres_pass@127.0.0.1:5445/fastapi_project_db"
+SQLALCHEMY_DATABASE_URL = settings.database_url
 
 
 def global_init() -> None:

@@ -19,7 +19,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from icecream import ic
 
-from src.routers.v1.books import books_router
+from src.routers import api_router
 from src.configurations.database import create_db_and_tables, global_init
 
 
@@ -50,4 +50,4 @@ async def main():
     return "Hello World!"
 
 
-app.include_router(books_router)
+app.include_router(api_router)
