@@ -1,2 +1,0 @@
-class BookService():
-    pass
