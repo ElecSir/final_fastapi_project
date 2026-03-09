@@ -12,7 +12,7 @@ class BookService:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def add_book(self, book: IncomingBook) -> Book:
+    async def add_book(self, book: IncomingBook) -> Book | None:
         # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
         new_book = Book(
             **{
@@ -20,6 +20,7 @@ class BookService:
                 "author": book.author,
                 "year": book.year,
                 "pages": book.pages,
+                "seller_id": book.seller_id,
             }
         )
 
@@ -47,6 +48,7 @@ class BookService:
             updated_book.author = new_book_data.author
             updated_book.pages = new_book_data.pages
             updated_book.year = new_book_data.year
+            updated_book.seller_id = new_book_data.seller_id
 
             await self.session.flush()
 
@@ -63,6 +65,8 @@ class BookService:
                 book.year = patched_book.year
             if patched_book.pages is not None and patched_book.pages != book.pages:
                 book.pages = patched_book.pages
+            if patched_book.seller_id is not None and patched_book.seller_id != book.seller_id:
+                book.seller_id = patched_book.seller_id    
 
             await self.session.flush()
             return book
