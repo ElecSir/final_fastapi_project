@@ -28,12 +28,12 @@ GET http://localhost:8000/api/v1/sellers/1 HTTP/1.1
 ###
 
 # Удаляем продавца
-DELETE http://localhost:8000/api/v1/sellers/2 HTTP/1.1
+DELETE http://localhost:8000/api/v1/sellers/1 HTTP/1.1
 
 ###
 
 # Обновляем поля в данных о продавце
-PUT http://localhost:8000/api/v1/sellers/3 HTTP/1.1
+PUT http://localhost:8000/api/v1/sellers/1 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -76,7 +76,7 @@ DELETE http://localhost:8000/api/v1/books/1 HTTP/1.1
 ###
 
 # Обновляем поля в данных о книге
-PUT http://localhost:8000/api/v1/books/2 HTTP/1.1
+PUT http://localhost:8000/api/v1/books/1 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -84,21 +84,21 @@ Content-Type: application/json
     "title": "Clean Code",
     "author": "Robert Martin",
     "year": 2022,
-    "selles_id": 3,
-    "pages": 310
+    "seller_id": 1,
+    "pages": 410
 }
 
 ###
 
 
 # Обновляем поля в данных о книге
-PATCH http://localhost:8000/api/v1/books/2 HTTP/1.1
+PATCH http://localhost:8000/api/v1/books/1 HTTP/1.1
 Content-Type: application/json
 
 {
     "title": "Mziri",
     "pages": 310,
-    "seller_id": 3
+    "seller_id": 1
 }
 
 ###
